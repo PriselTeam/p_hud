@@ -1,10 +1,5 @@
 Prisel.HUD.Constants = Prisel.HUD.Constants or {}
 
-Prisel.HUD.Constants.Themes = {
-    "old",
-    "circular",
-}
-
 Prisel.HUD.Constants.HidedElements = {
     ["CHudHealth"] = true,
     ["CHudBattery"] = true,
