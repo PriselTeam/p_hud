@@ -1,59 +1,32 @@
-local themes = {}
-local currentTheme = {}
+local themes = themes or {}
+local currentTheme = "default"
 
-function Prisel.HUD.SaveCurrentTheme()
-    if not currentTheme then return end
+function Prisel.HUD:RegisterTheme(name, fcDraw)
+    themes[name] = fcDraw
+end
 
-    if not file.Exists("prisel/hud/", "DATA") then
-        file.CreateDir("prisel/hud/")
+function Prisel.HUD:SetTheme(theme)
+    if not themes[theme] then
+        error("Theme " .. theme .. " does not exist")
     end
 
-    file.Write("prisel/hud/theme.txt", currentTheme.Name)
+    currentTheme = theme
+end
 
+function Prisel.HUD:GetCurrentTheme()
     return currentTheme
 end
 
-function Prisel.HUD.LoadTheme()
-    if not file.Exists("prisel/hud/theme.txt", "DATA") then return end
-
-    local theme = file.Read("prisel/hud/theme.txt", "DATA")
-
-    if not themes[theme] then return end
-
-    currentTheme = theme.name
-
-    return theme
+function Prisel.HUD:GetThemeByName(name)
+    return themes[name]
 end
 
-function Prisel.HUD.AddTheme(cname, drawing)
-    themes[cname] = {}
-    themes[cname].name = cname
-    themes[cname].Draw = drawing
-end
+function Prisel.HUD.DrawCurrentTheme()
 
-function Prisel.HUD.GetThemes()
-    return themes
-end
+    if not themes[currentTheme] then
+        error("Theme " .. currentTheme .. " does not exist")
+        Prisel.HUD:SetTheme("default")
+    end
 
-function Prisel.HUD.SetTheme(name)
-    currentTheme = themes[name]
-end
-
-function Prisel.HUD.GetCurrentTheme(fallback)
-
-    if not currentTheme then
-        if fallback then
-            Prisel.HUD.SetTheme(fallback)
-            return themes[fallback]
-        end
-    return end
-
-    return currentTheme
-
-end
-
-function Prisel.HUD.DrawTheme(name)
-    if not themes[name] then return end
-
-    themes[name].Draw()
+    themes[currentTheme]()
 end
